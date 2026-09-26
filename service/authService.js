@@ -26,3 +26,11 @@ export const login = async (email, password) => {
     const token = jwt.sign(user, env.jwt.secret, {expiresIn:env.jwt.expiresIn});
     return token;
 }
+
+export const me=async (email) => {
+    const user = await userRepository.getByEmail(email);
+    if (user === undefined) {
+        throw new AuthError("User Not Found", 404);
+    }
+    return user;
+}

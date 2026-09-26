@@ -17,3 +17,13 @@ export const login = async (req, res, next) => {
         next(error);
     }
 }
+
+export const me= async (req,res,next) => {
+    try {
+        const {email}= req.user;
+        const user= await authService.me(email);
+        res.status(200).json(user);
+    } catch (error) {
+        next(error);
+    }
+}
