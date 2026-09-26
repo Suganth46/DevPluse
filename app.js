@@ -1,9 +1,7 @@
 import express from "express";
-import { configDotenv } from "dotenv";
+import { env } from "./config/index.js";
 import authRoutes from "./routes/authRoutes.js";
-configDotenv({
-    path:".env"
-});
+
 
 const app=express();
 app.use(express.json());
@@ -21,14 +19,22 @@ app.use(authRoutes);
 
 app.use((err,req,res,next)=>{
     console.log(err);
-    const status=err.status || 500;
-    res.status(status).json({
-        message:err.message
+    if(err.operational){
+       return res.status(err.status).json({
+            success:false,
+            status:err.status,
+            message:err.message
+        });
+    }
+    return res.status(500).json({
+        success:false,
+        status:500,
+        message:"Internal Server Error"
     });
 })
 
 
-const port=process.env.PORT || 3001;
+const port=env.port;
 app.listen(port,()=>{
     console.log(`Server is listening on ${port}`);
 })
